@@ -43,6 +43,7 @@ class Commit(model.Base):
     scm = relationship("SCM")
     branches = relationship("Branch", secondary=branch_commit,
         backref="commits")
+    date = Column(Datetime(timezone=True))
 
 
 class Tag(model.Base):

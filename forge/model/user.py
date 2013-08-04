@@ -25,8 +25,16 @@ class Group(model.Base):
     name = Column(String)
 
 
+assignment_permissions = Table("user_assignment_permissions",
+        model.Base.metadata,
+        Column("assignment", ForeignKey("user_assignments.id")),
+        Column("permission", ForeignKey("user_permissions.id")),
+        )
+
+
 class Assignment(model.Base):
-    __tablename__ = "user_assignment"
+    __tablename__ = "user_assignments"
+    id = Column(Integer, primary_key=True)
     role_id = Column(ForeignKey("user_roles.id"))
     role = relationship("Role")
     module_id = Column(ForeignKey("project_modules.id"),
@@ -38,6 +46,8 @@ class Assignment(model.Base):
             'polymorphic_on' : type,
             'polymorphic_identity' : None,
             }
+    permissions = relationship("Permission",
+            secondary=assignment_permissions)
 
 
 class UserAssignment(Assignment):
@@ -77,3 +87,7 @@ class Role(model.Base):
 
 
 class Permission(model.Base):
+    __tablename__ = "user_permissions"
+    id = Column(Integer, primary_key=True)
+    action = Column(String)
+    target = Column(String)
